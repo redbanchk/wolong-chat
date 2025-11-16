@@ -1,5 +1,5 @@
 const Chat=(function(){
-  const API_URL="/api/chat_api";
+  const API_URL="/api/chat";
   const chatMessages=document.getElementById('chatMessages');
   const userInput=document.getElementById('userInput');
   const sendButton=document.getElementById('sendButton');
