@@ -14,8 +14,13 @@ module.exports=async function(req,res){
   const apiKey=process.env.ARK_API_KEY||'';
   const endpointId=process.env.ENDPOINT_ID||'';
   const baseUrl=(process.env.ARK_BASE_URL||'https://ark.cn-beijing.volces.com/api/v3').replace(/\/+$/,'');
+  const systemPrompt=(process.env.SYSTEM_PROMPT||'').trim();
+  const systemPromptDecoded=systemPrompt.replace(/\\n/g,'\n');
+  const tRaw=process.env.TEMPERATURE;
+  const temperature=tRaw!==undefined&&tRaw!==null?Number(tRaw):undefined;
   if(!apiKey||!endpointId){res.status(500).json({error:'缺少配置'});return;}
   const msgs=[];
+  if(systemPromptDecoded.length)msgs.push({role:'system',content:systemPromptDecoded});
   if(Array.isArray(history)){
     history.forEach(pair=>{
       if(Array.isArray(pair)&&pair.length>=2){
@@ -28,7 +33,9 @@ module.exports=async function(req,res){
   }
   if(message.length)msgs.push({role:'user',content:message});
   try{
-    const resp=await fetch(baseUrl+'/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},body:JSON.stringify({model:endpointId,messages:msgs})});
+    const payload={model:endpointId,messages:msgs};
+    if(Number.isFinite(temperature))payload.temperature=temperature;
+    const resp=await fetch(baseUrl+'/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},body:JSON.stringify(payload)});
     const text=await resp.text();
     if(!resp.ok){res.status(resp.status).send(text);return;}
     let json={};

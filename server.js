@@ -36,8 +36,9 @@ function buildReply(msg){
   return `${baseText}${s.length?`“${s}”`:'万事当观其势'}。${counsel}`;
 }
 
-function toMessages(history,message){
+function toMessages(history,message,systemPrompt){
   const msgs=[];
+  if(systemPrompt&&systemPrompt.length)msgs.push({role:'system',content:systemPrompt});
   if(Array.isArray(history)){
     history.forEach(pair=>{
       if(Array.isArray(pair)&&pair.length>=2){
@@ -57,7 +58,12 @@ function arkChatCompletion(apiKey,endpointId,baseUrl,message,history){
   return new Promise((resolve,reject)=>{
     if(!apiKey||!endpointId){reject(new Error('缺少配置'));return;}
     const u=new URL((baseUrl||'https://ark.cn-beijing.volces.com/api/v3').replace(/\/+$/,'')+'/chat/completions');
-    const payload=JSON.stringify({model:endpointId,messages:toMessages(history,message)});
+    const sp=((process.env.SYSTEM_PROMPT||'').trim()).replace(/\\n/g,'\n');
+    const tRaw=process.env.TEMPERATURE;
+    const temperature=tRaw!==undefined&&tRaw!==null?Number(tRaw):undefined;
+    const body={model:endpointId,messages:toMessages(history,message,sp)};
+    if(Number.isFinite(temperature))body.temperature=temperature;
+    const payload=JSON.stringify(body);
     const req=https.request({hostname:u.hostname,port:u.port||443,path:u.pathname,method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${apiKey}`}},resp=>{
       let body='';
       resp.on('data',d=>{body+=d;});

@@ -35,7 +35,7 @@
             <aside class="sidebar">
                 <div class="character-info">
                     <div class="avatar">
-                        <img src="zhuge-liang-avatar.png" alt="诸葛亮">
+                        <img id="avatarImg" src="zhuge-liang-avatar.png" alt="诸葛亮" loading="lazy">
                     </div>
                     <h3>诸葛亮</h3>
                     <p class="status">在线</p>
@@ -85,6 +85,13 @@
 
     <script src="logger.js"></script>
     <script>window.__CHAT_API_URL='/api/chat_api';</script>
+    <script>
+      (function(){
+        var img=document.getElementById('avatarImg');
+        var url=window.__AVATAR_URL__;
+        if(img&&typeof url==='string'&&url.trim().length){img.src=url.trim();}
+      })();
+    </script>
     <script src="chat.js"></script>
     <script src="app.js"></script>
 </body>
