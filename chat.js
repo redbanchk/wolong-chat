@@ -20,15 +20,39 @@ const Chat=(function(){
     try{
       Logger.info('请求接口',{url:API_URL,payload:{message:msg,history}});
       const res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:msg,history})});
-      if(!res.ok)throw new Error(`API 请求失败: ${res.status} ${res.statusText}`);
-      const data=await res.json();
-      if(data&&data.error)throw new Error(data.error);
+      if(!res.ok){
+        let body='';
+        try{ body=await res.text(); }catch(_){}
+        Logger.error('接口响应异常',{status:res.status,statusText:res.statusText,body});
+        const errorModal=document.getElementById('errorModal');
+        const errorContent=document.getElementById('errorContent');
+        if(errorModal&&errorContent){
+          errorContent.textContent=`状态: ${res.status} ${res.statusText}\n\n${body}`;
+          errorModal.style.display='flex';
+        }
+        throw new Error(`API 请求失败: ${res.status}`);
+      }
+      let data; 
+      try{ data=await res.json(); }catch(_){
+        Logger.warn('接口返回非JSON',{status:res.status});
+        data={};
+      }
+      if(data&&data.error){
+        Logger.error('接口返回错误字段',data.error);
+        throw new Error(data.error);
+      }
       const reply=data.reply;
       append(reply,'assistant');
       history.push([msg,reply]);
       Logger.log('info','接口成功',{reply});
     }catch(e){
+      const errorModal=document.getElementById('errorModal');
+      const errorContent=document.getElementById('errorContent');
       Logger.error('接口错误',String(e));
+      if(errorModal&&errorContent){
+        errorContent.textContent=`${String(e)}`;
+        errorModal.style.display='flex';
+      }
       append('抱歉，在下思绪稍有混乱，请稍后再试。','assistant');
     }finally{
       disableSend(false);setLoading(false);
