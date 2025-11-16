@@ -4,20 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>与诸葛亮对话</title>
-    <link rel="stylesheet" href="/wolong-chat/style.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </head>
 <body>
+    <header id="app-header">
+        <div class="title">与诸葛亮对话</div>
+        <button id="log-toggle" class="secondary">查看日志</button>
+    </header>
     <div id="chat-container">
         <div id="chat-box">
             <div class="message assistant">
                 <p>吾乃诸葛孔明，有何事，不妨直言。</p>
+                <span class="timestamp"></span>
             </div>
         </div>
         <div id="input-container">
-            <input type="text" id="user-input" placeholder="请在此输入你的问题...">
+            <input type="text" id="user-input" placeholder="请在此输入你的问题..." aria-label="聊天输入">
             <button id="send-btn">发送</button>
         </div>
     </div>
-    <script src="/wolong-chat/script.js"></script>
+    <div id="log-panel" class="hidden">
+        <div class="panel-header">
+            <div>运行日志与错误</div>
+            <div class="panel-actions">
+                <button id="copy-logs" class="secondary">复制</button>
+                <button id="clear-logs" class="secondary">清空</button>
+                <button id="log-close" class="secondary">关闭</button>
+            </div>
+        </div>
+        <div id="log-list"></div>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
