@@ -3,38 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>与诸葛亮对话</title>
-    <link rel="stylesheet" href="style.css">
+    <title>诸葛亮 - 智能对话</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <meta name="theme-color" content="#8b4513">
 </head>
 <body>
-    <header id="app-header">
-        <div class="title">与诸葛亮对话</div>
-        <button id="log-toggle" class="secondary">查看日志</button>
-    </header>
-    <div id="chat-container">
-        <div id="chat-box">
-            <div class="message assistant">
-                <p>吾乃诸葛孔明，有何事，不妨直言。</p>
-                <span class="timestamp"></span>
+    <div class="container">
+        <header class="header">
+            <div class="title">
+                <h1>诸葛亮 · 智能对话</h1>
+                <p class="subtitle">运筹帷幄之中，决胜千里之外</p>
+            </div>
+            <div class="controls">
+                <button id="logToggle" class="btn-log">查看日志</button>
+                <button id="errorToggle" class="btn-error">错误报告</button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="chat-container">
+                <div id="chatMessages" class="chat-messages"></div>
+                <div class="input-container">
+                    <input type="text" id="userInput" class="user-input" placeholder="请向孔明先生提问..." maxlength="500">
+                    <button id="sendButton" class="send-button">发送</button>
+                </div>
+            </div>
+
+            <aside class="sidebar">
+                <div class="character-info">
+                    <div class="avatar">
+                        <img src="zhuge-liang-avatar.png" alt="诸葛亮">
+                    </div>
+                    <h3>诸葛亮</h3>
+                    <p class="status">在线</p>
+                </div>
+                <div class="quick-actions">
+                    <h4>快速提问</h4>
+                    <button class="quick-question" data-question="先生如何看待天下大势？">天下大势</button>
+                    <button class="quick-question" data-question="请问用兵之道？">用兵之道</button>
+                    <button class="quick-question" data-question="如何修身养性？">修身养性</button>
+                </div>
+            </aside>
+        </main>
+
+        <div id="logModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>系统日志</h3>
+                    <button class="close" id="logClose">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="log-controls">
+                        <button id="clearLogs" class="btn-clear">清空日志</button>
+                        <button id="exportLogs" class="btn-export">导出日志</button>
+                    </div>
+                    <div id="logContent" class="log-content"></div>
+                </div>
             </div>
         </div>
-        <div id="input-container">
-            <input type="text" id="user-input" placeholder="请在此输入你的问题..." aria-label="聊天输入">
-            <button id="send-btn">发送</button>
-        </div>
-    </div>
-    <div id="log-panel" class="hidden">
-        <div class="panel-header">
-            <div>运行日志与错误</div>
-            <div class="panel-actions">
-                <button id="copy-logs" class="secondary">复制</button>
-                <button id="clear-logs" class="secondary">清空</button>
-                <button id="log-close" class="secondary">关闭</button>
+
+        <div id="errorModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>错误报告</h3>
+                    <button class="close" id="errorClose">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div id="errorContent" class="error-content"></div>
+                </div>
             </div>
         </div>
-        <div id="log-list"></div>
     </div>
-    <script src="script.js"></script>
+
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p>孔明思考中...</p>
+    </div>
+
+    <script src="logger.js"></script>
+    <script src="chat.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
