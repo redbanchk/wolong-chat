@@ -89,7 +89,13 @@
       (function(){
         var img=document.getElementById('avatarImg');
         var url=window.__AVATAR_URL__;
-        if(img&&typeof url==='string'&&url.trim().length){img.src=url.trim();}
+        var svg='<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" rx="50" fill="#8b4513"/><text x="50" y="60" font-size="48" text-anchor="middle" fill="#fff">诸</text></svg>';
+        var fallback='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+        if(img){
+          img.onerror=function(){img.src=fallback;};
+          if(typeof url==='string'&&url.trim().length){img.src=url.trim();}
+          else{fetch('/api/config').then(function(r){return r.json();}).then(function(c){if(c&&c.avatarUrl){img.src=String(c.avatarUrl);}else{img.src=fallback;}}).catch(function(){img.src=fallback;});}
+        }
       })();
     </script>
     <script src="chat.js"></script>
